@@ -110,8 +110,3 @@ applypos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s
 --mkisos is the same as repeated use of same
 mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a
 mkisos (MkDimension a) = MkDimension a
--- worldPopulationInBillions = dimension "billion*people" 8.142
--- worldPopulation = fmap floor $ applypos "billion" (*1e9) worldPopulationInBillions
--- daysInYear = dimension "days/years" 365
--- caloriePerDay = dimension "calories/days/people" 2000
--- 
