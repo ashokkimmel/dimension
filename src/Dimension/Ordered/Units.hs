@@ -50,6 +50,8 @@ type ValidDimension a = (a ~ Format a)
 type ValidParse :: forall k. Symbol -> [(k,Int')]
 type ValidParse a = Sort (Parse a)
 
+
+
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
 (!+) = liftD2 (+)
 infixl 6 !+
@@ -71,6 +73,9 @@ noParseDimensions _ = fmap MkDimension
 
 validateDimension :: Dimension a b -> Dimension (Format a) b
 validateDimension (MkDimension a) = MkDimension a
+
+combine2D :: (a -> b -> c) -> Dimension tag1 a -> Dimension tag2 b -> Dimension (UnZero (Merge tag1 tag2)) c 
+combine2D f (MkDimension a) (MkDimension b) = MkDimension (f a b)
 
 (!*) :: Num n => Dimension a n -> Dimension b n -> Dimension (UnZero (Merge a b)) n
 (MkDimension a) !* (MkDimension b) = MkDimension (a * b)
