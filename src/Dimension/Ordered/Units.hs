@@ -25,7 +25,7 @@ module Dimensions.Ordered.Units (Dimension(..)
                     ,dimensions
                     ,dimension
                     ,dimensionsPoly
-                    ,dimensionPoly,divD
+                    ,dimensionPoly,divD,combine2D,lift2D
                     ,noParseDimensions,noParseDimension) where 
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol)
