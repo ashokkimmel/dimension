@@ -18,7 +18,9 @@ A dimension is difined quite simply as:
     newtype Dimension a b = MkDimension b
         deriving stock (Eq,Ord,Functor)
 
-`k` represents the kind used to index dimensions. One example is `Symbols`, another would be a `Meter` kind, another might be `CaseInsenstiveStrings`,etc. 
+There are two invariants: The `Int'` should never be zero, and the `Dimension` should be ordered. This means that there is only 1 valid type that satisfies the invariants per dimension.
+
+`k` represents the kind used to index dimensions. One example is `Symbols`, another would be a `Metric` kind, another might be `CaseInsenstiveStrings`,etc. 
 `Int'` represents the datatype used in this repository to represent `Integers`. 
 
     data Int' = Pos Nat | Neg Nat 
