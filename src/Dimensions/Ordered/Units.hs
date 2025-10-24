@@ -49,7 +49,10 @@ type ValidDimension :: [(k, Int')] -> Constraint
 type ValidDimension a = (a ~ Format a)
 type ValidParse :: forall k. Symbol -> [(k,Int')]
 type ValidParse a = Sort (Parse a)
-
+type (!*) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
+type (!*) a b = UnZero (Merge a b)
+type (!/) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
+type (!/) a b = UnZero (Merge a (Invert b))
 
 
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
@@ -96,18 +99,22 @@ validateDimension :: Dimension a b -> Dimension (Format a) b
 validateDimension (MkDimension a) = MkDimension a
 {-# INLINE validateDimension #-}
 
-combineD2 :: (a -> b -> c) -> Dimension tag1 a -> Dimension tag2 b -> Dimension (UnZero (Merge tag1 tag2)) c
+combineD2 :: (a -> b -> c) -> Dimension tag1 a -> Dimension tag2 b -> Dimension (tag1 !* tag2) c
 combineD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b)
 {-# INLINE combineD2 #-}
-(!*) :: Num n => Dimension a n -> Dimension b n -> Dimension (UnZero (Merge a b)) n
+combineInvD2 :: (a -> b -> c) -> Dimension tag1 a -> Dimension tag2 b -> Dimension (tag1 !/ tag2) c
+combineInvD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b)
+{-# INLINE combineD2 #-}
+
+(!*) :: Num n => Dimension a n -> Dimension b n -> Dimension (a !* b) n
 (MkDimension a) !* (MkDimension b) = MkDimension (a * b)
 infixl 7 !*
 {-# INLINE (!*) #-}
-(!/) :: Fractional n => Dimension a n -> Dimension b n -> Dimension (UnZero (Merge a (Invert b))) n
-(MkDimension a) !/ (MkDimension b) = MkDimension (a * b)
+(!/) :: Fractional n => Dimension a n -> Dimension b n -> Dimension (a !/ b) n
+(MkDimension a) !/ (MkDimension b) = MkDimension (a / b)
 infixl 7 !/
 {-# INLINE (!/) #-}
-divD :: Integral n => Dimension a n -> Dimension b n -> Dimension (UnZero (Merge a (Invert b))) n
+divD :: Integral n => Dimension a n -> Dimension b n -> Dimension (a !/ b) n
 divD (MkDimension a) (MkDimension b) = MkDimension (a `div` b)
 {-# INLINE divD #-}
 undimension :: Dimension '[] a -> a
