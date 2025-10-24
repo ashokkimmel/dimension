@@ -26,8 +26,11 @@ A dimension is difined quite simply as:
 `Neg n` represents `-(n+1)`. 
 
 ## Creation
-There are 6 ways to create dimensions
+There are 8 ways to create dimensions
 
+
+    dim :: b -> forall a ->  Dimension (ValidParse @Symbol a) b 
+    dims ::Functor f => f b -> forall a ->  f (Dimension (ValidParse @Symbol a) b) 
     dimension :: forall a -> forall b. b -> Dimension (ValidParse @Symbol a)  b
     dimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (ValidParse @Symbol a) b)
     dimensionPoly :: forall a -> forall b.  b -> Dimension (ValidParse a) b 
@@ -35,7 +38,7 @@ There are 6 ways to create dimensions
     noParseDimension :: forall a -> forall b. b -> Dimension (Format a) b
     noParseDimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
 
-`dimension` and `dimensions` are the most common ones. They only work on symbols however, so if you want to use a different base, they would fail. `dimensions` is just dimension but lifted over a functor. Inspired by the ReadMe for the `Dimensional`  library. The polymorphic versions suffer from type ambiguity as the kind of the resulting `Dimension` is unknown. It is reccomended that you add a wrapper if you plan to use a seperate dimension. `noParseDimension` is if you don't want to use the built in parser and want to manually specify the dimensions. 
+`dim`,`dims`,`dimension` and `dimensions` are the most common ones. They only work on symbols however, so if you want to use a different base, they would fail. `dim` and `dims` are like their longer counterparts just with the arguments flipped. `dimensions` is just dimension but lifted over a functor. Inspired by the ReadMe for the `Dimensional`  library. The polymorphic versions suffer from type ambiguity as the kind of the resulting `Dimension` is unknown. It is reccomended that you add a wrapper if you plan to use a seperate dimension. `noParseDimension` is if you don't want to use the built in parser and want to manually specify the dimensions. 
 ### Note on parser
 The parser is very simple: 
 it checks for `*`,and `/`, splits them into sections,
@@ -59,7 +62,7 @@ Despite the fact that the ordering of meter is actually before second, the print
 ## Multiplying,dision,etc.
 
 `!+`,`!-`,`!*`,`!/`,`divD` can be used for multiplying and dividing dimensions. 
-They are mostly just specialized forms of `liftD2` and `combineD2`. 
+They are mostly just specialized forms of `liftD2`, which works on two of the same and `combineD2`, which multiplies the two types. 
     
     
 ## Transformations along dimensions
@@ -83,7 +86,8 @@ Assert that two things are the same, and replace one with another. Example: `g` 
 the same as repeated usage of `same`, uses a type level list.
 
 ## Extracting dimensions
-Currently only one function, `undimension`, which requires that all tags be eliminated already.
+`undimension`,  requires all tags be eliminated already.
 
+`getdimension` allow you to specify the dimension, and `getdimensionNoParse` allows you to manually parse things.
 ## TODO:
-This package is a work in progress, and I would appreciate help. I recently switched versions of GHC and changed many things to use `RequiredTypeArguments`, but the change is not yet finished, I also implemented a match class that allows for functions allong dimensional strings, creating futher extensibility. There are also very few tests. I'm quite bored of this project, but I am willing to finish it if someone shows interest.
+This package is a work in progress, and I would appreciate help. I  implemented a match class that allows for functions allong dimensional strings, creating futher extensibility. There are also very few tests. I'm quite bored of this project, but I am willing to finish it if someone shows interest.
