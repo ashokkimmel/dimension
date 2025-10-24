@@ -17,6 +17,7 @@
 {-# LANGUAGE Safe #-}
 module Dimensions.Ordered.Units (Dimension(..)
                     ,(!*),(!/),(!-),(!+)
+                    ,type (!*),type (!/)
                     ,Replace,Isos,Delete
                     ,Format,ValidDimension,ValidParse
                     ,mkisos,applypos,apply,same,transformpos,transform
