@@ -8,7 +8,7 @@ A simple library oriented around providing easy and usable string-based units wh
     daysInYear = dimension "days/years" 365
     caloriePerDay = dimension "calories/days/people" 2000    
     caloriesPerYear = caloriePerDay !* daysInYear !* worldPopulation 
-
+    > 5943659999270000 calories / years
 Since everything has units, I chose `Symbols` to be the core dimensional type of this project.
 
 ## Implementation
@@ -32,7 +32,6 @@ There are 6 ways to create dimensions
     dimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (ValidParse @Symbol a) b)
     dimensionPoly :: forall a -> forall b.  b -> Dimension (ValidParse a) b 
     dimensionsPoly :: forall a -> forall f b. Functor f => f b -> f (Dimension (ValidParse a) b) 
-    dimensionsPoly _ = fmap MkDimension
     noParseDimension :: forall a -> forall b. b -> Dimension (Format a) b
     noParseDimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
 
@@ -43,10 +42,11 @@ it checks for `*`,and `/`, splits them into sections,
 checks for `^` in the subsections and creates the dimensions accordingly.
 As a result, all of the following are valid
 
-    Parse "*******"
-    Parse "*/*/***^201"
+    :k! Parse "*******" -> ['("", TI.Pos 1), '("", TI.Pos 1), '("", TI.Pos 1),'("", TI.Pos 1), '("", TI.Pos 1), '("", TI.Pos 1), '("", TI.Pos 1),'("", TI.Pos 1)]
+    :k! Parse "*/*/***^201" -> ['("", TI.Pos 1), '("", TI.Pos 1), '("", TI.Neg 0),'("", TI.Pos 1), '("", TI.Neg 0), '("", TI.Pos 1), '("", TI.Pos 1),'("", TI.Pos 201)]
     :k! Parse "second/(meter*kilogram)"  -> [("kilogram),Pos 1),("(meter",Neg 0),("second",Pos 1)] 
 
+`dimension` ensures that the invariants are upheld, but still allows annoyances. Check the types!
 Given the annoyance inherent to type level coding, this may not change.
 
 ### Note on printer
@@ -54,12 +54,12 @@ The printer will not print the actual type as it is stored. e.g.
 
     dimension "second/meter" 2 -> 2 second/meter
 
-Despite the fact that the ordering of meter is actually before second, the printer tries to print the positive dimensions first.
+Despite the fact that the ordering of meter is actually before second, the printer tries to print the positive dimensions first. A useful note for debugging type errors.
 
 ## Multiplying,dision,etc.
 
 `!+`,`!-`,`!*`,`!/`,`divD` can be used for multiplying and dividing dimensions. 
-They are mostly just specialized forms of `liftD` and `combineD`. 
+They are mostly just specialized forms of `liftD2` and `combineD2`. 
     
     
 ## Transformations along dimensions
