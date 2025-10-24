@@ -62,17 +62,17 @@ library
     -- Modules exported by the library.
     exposed-modules: 
         Dimensions.CommonIsos
-        Dimensions.DimensionalMisc
-        Dimensions.GetTermLevel
-        Dimensions.Ordered.Order
-        Dimensions.Ordered.Units
-        Dimensions.Polymorphic.ParseMisc
-        Dimensions.Polymorphic.Parser
-        Dimensions.Printer
-        Dimensions.TypeLevelInt
-        Dimensions.TypeMisc
-        Dimensions.Data 
-        Dimensions.Metric
+       , Dimensions.DimensionalMisc
+       , Dimensions.GetTermLevel
+       , Dimensions.Ordered.Order
+       , Dimensions.Ordered.Units
+       , Dimensions.Polymorphic.ParseMisc
+       , Dimensions.Polymorphic.Parser
+       , Dimensions.Printer
+       , Dimensions.TypeLevelInt
+       , Dimensions.TypeMisc
+       , Dimensions.Data
+       , Dimensions.Metric
         
     -- Modules included in this library but not exported.
     -- other-modules:
