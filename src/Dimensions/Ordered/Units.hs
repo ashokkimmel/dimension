@@ -61,6 +61,12 @@ infixl 6 !+
 (!-) = liftD2 (-)
 infixl 6 !-
 {-# INLINE (!-) #-}
+dim :: b -> forall a ->  Dimension a b 
+dim b _ = MkDimension b  
+{-# INLINE dim #-}
+dims ::Functor f => f b -> forall a ->  f (Dimension a b) 
+dims b _ = fmap MkDimension b  
+{-# INLINE dims #-}
 
 dimension :: forall a -> forall b. b -> Dimension (ValidParse @Symbol a)  b
 dimension _ = MkDimension
@@ -107,22 +113,28 @@ divD (MkDimension a) (MkDimension b) = MkDimension (a `div` b)
 undimension :: Dimension '[] a -> a
 undimension (MkDimension a) = a
 {-# INLINE undimension #-}
+getDimension :: forall a -> Dimension (Parse a) c -> c 
+getDimension _ (MkDimension c) = c
+{-# INLINE getdimension #-}
+getDimensionNoParse :: forall a -> Dimension a c -> c 
+getDimensionNoParse _ (MkDimension c) = c
+{-# INLINE getdimensionNoParse #-}
 
-transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transform (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
+transform :: forall s t -> forall x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transform _ _ (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
     case compare times 0 of 
         EQ -> MkDimension a
         GT -> MkDimension $ appEndo (stimes times (Endo fun)) a
         LT -> MkDimension $ appEndo (stimes (negate times) (Endo invfun)) a
 {-# INLINE transform #-}
 
-transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transformpos fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
+transformpos :: forall s t -> forall x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformpos _ _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
     MkDimension $ appEndo (stimes times (Endo fun)) a
 {-# INLINE transformpos #-}
 
-same :: forall s t x. (forall a. Dimension x a -> Dimension (Replace s t x) a)
-same (MkDimension a) = MkDimension a
+same :: forall s t -> forall x a. Dimension x a -> Dimension (Replace s t x) a
+same _ _ (MkDimension a) = MkDimension a
 {-# INLINE same #-}
 
 apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Delete s x) a
@@ -138,6 +150,6 @@ applypos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s
     MkDimension $ appEndo (stimes times (Endo fun)) a
 {-# INLINE applypos #-}
 --mkisos is the same as repeated use of same
-mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a
-mkisos (MkDimension a) = MkDimension a
+mkisos :: forall y -> forall x a. Dimension x a -> Dimension (Isos y x) a
+mkisos _ (MkDimension a) = MkDimension a
 {-# INLINE mkisos #-}
