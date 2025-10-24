@@ -15,7 +15,7 @@
 {-# LANGUAGE NoGeneralisedNewtypeDeriving #-}
 {-# LANGUAGE RequiredTypeArguments #-}
 {-# LANGUAGE Safe #-}
-module Dimensions.Ordered.Units (Dimension(..)
+module Dimensions.Units (Dimension(..)
                     ,(!*),(!/),(!-),(!+)
                     ,type (!*),type (!/)
                     ,Replace,Isos,Delete
@@ -32,9 +32,9 @@ import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol)
 import qualified Dimensions.TypeLevelInt as TI
 import Dimensions.TypeLevelInt (Int')
-import Dimensions.Polymorphic.Parser (Parse)
+import Dimensions.Parser (Parse)
 import Data.Semigroup (Endo(appEndo,Endo),stimes)
-import Dimensions.Ordered.Order (Sort,Merge)
+import Dimensions.Order (Sort,Merge)
 import Data.Kind (Constraint)
 import Dimensions.DimensionalMisc (Isos',Delete,UnZero,Replace',LookupD0,Invert)
 import Dimensions.Data (Dimension(MkDimension),liftD2)

@@ -6,7 +6,7 @@
 {-# LANGUAGE NoGeneralisedNewtypeDeriving #-}
 {-# LANGUAGE Safe #-}
 
-module Dimensions.Ordered.Order (Sort,Merge) where 
+module Dimensions.Order (Sort,Merge) where 
 import GHC.TypeLits qualified as TL
 import GHC.TypeLits (Nat)
 import Dimensions.TypeLevelInt qualified as TI

@@ -9,7 +9,7 @@ module Dimensions.Metric (Metric(..)) where
 import Data.Type.Ord (Compare)
 import GHC.TypeLits (Nat,Symbol)
 import Data.Kind (Type)
-import Dimensions.Polymorphic.Parser (ToDimension)
+import Dimensions.Parser (ToDimension)
 type Metric :: Type 
 data Metric = Meter | Kilogram | Second | Ampere | Kelvin | Mole | Candela
     deriving stock (Show, Eq)

@@ -8,7 +8,7 @@
 {-# LANGUAGE NoGeneralisedNewtypeDeriving #-}
 {-# LANGUAGE Safe #-}
 
-module Dimensions.Polymorphic.ParseMisc 
+module Dimensions.ParseMisc 
                  (IgnoreWhitespace
                  ,TakeWhileNotIn
                  ,UnUnConsSymbol
