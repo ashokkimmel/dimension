@@ -16,18 +16,40 @@
 {-# LANGUAGE RequiredTypeArguments #-}
 {-# LANGUAGE Safe #-}
 module Dimensions.Units (Dimension(..)
-                    ,(!*),(!/),(!-),(!+)
-                    ,type (!*),type (!/)
-                    ,Replace,Isos,Delete
-                    ,Format,ValidDimension,ValidParse
-                    ,mkisos,applypos,apply,same,transformpos,transform
-                    ,validateDimension
-                    ,undimension
-                    ,dimensions
-                    ,dimension
-                    ,dimensionsPoly
-                    ,dimensionPoly,divD,combineD2,liftD2
-                    ,noParseDimensions,noParseDimension) where 
+                                , (!*)
+                                , (!/)
+                                , (!-)
+                                , (!+)
+                                , type (!*)
+                                , type (!/)
+                                , Replace
+                                , Isos
+                                , Delete
+                                , Format
+                                , ValidDimension
+                                , ValidParse
+                                , mkisos
+                                , applypos
+                                , apply
+                                , same
+                                , transformpos
+                                , transform
+                                , validateDimension
+                                , undimension
+                                , dimensions
+                                , dimension
+                                , dimensionsPoly
+                                , dimensionPoly
+                                , divD
+                                , combineD2
+                                , liftD2
+                                , noParseDimensions
+                                , noParseDimension
+                                , getDimensionNoParse
+                                , getDimension 
+                                , dims 
+                                , dim 
+                                , combineInvD2) where 
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol)
 import qualified Dimensions.TypeLevelInt as TI
@@ -105,7 +127,7 @@ combineD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b)
 {-# INLINE combineD2 #-}
 combineInvD2 :: (a -> b -> c) -> Dimension tag1 a -> Dimension tag2 b -> Dimension (tag1 !/ tag2) c
 combineInvD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b)
-{-# INLINE combineD2 #-}
+{-# INLINE combineInvD2 #-}
 
 (!*) :: Num n => Dimension a n -> Dimension b n -> Dimension (a !* b) n
 (MkDimension a) !* (MkDimension b) = MkDimension (a * b)
@@ -123,25 +145,29 @@ undimension (MkDimension a) = a
 {-# INLINE undimension #-}
 getDimension :: forall a -> Dimension (Parse a) c -> c 
 getDimension _ (MkDimension c) = c
-{-# INLINE getdimension #-}
+{-# INLINE getDimension #-}
 getDimensionNoParse :: forall a -> Dimension a c -> c 
 getDimensionNoParse _ (MkDimension c) = c
-{-# INLINE getdimensionNoParse #-}
-
-transform :: forall s t -> forall x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transform _ _ (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
+{-# INLINE getDimensionNoParse #-}
+doN :: (Eq a, Num a) => (t -> t) -> a -> t -> t
+doN f = go where 
+    go 0 a = a
+    go x a = f (go x a)
+{-# INLINE doN #-}
+transform :: forall x a. forall s t -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transform s _ (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
     case compare times 0 of 
         EQ -> MkDimension a
-        GT -> MkDimension $ appEndo (stimes times (Endo fun)) a
-        LT -> MkDimension $ appEndo (stimes (negate times) (Endo invfun)) a
+        GT -> MkDimension $ doN fun times a
+        LT -> MkDimension $ doN invfun (negate times) a
 {-# INLINE transform #-}
 
-transformpos :: forall s t -> forall x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transformpos _ _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
-    MkDimension $ appEndo (stimes times (Endo fun)) a
+transformpos :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformpos s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
+    MkDimension $ doN fun times a
 {-# INLINE transformpos #-}
 
-same :: forall s t -> forall x a. Dimension x a -> Dimension (Replace s t x) a
+same :: forall x a. forall s t -> Dimension x a -> Dimension (Replace s t x) a
 same _ _ (MkDimension a) = MkDimension a
 {-# INLINE same #-}
 
@@ -149,13 +175,13 @@ apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> 
 apply s (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
     case compare times 0 of
         EQ -> MkDimension a
-        GT -> MkDimension $ appEndo (stimes times (Endo fun)) a
-        LT -> MkDimension $ appEndo (stimes (negate times) (Endo invfun)) a
+        GT -> MkDimension $ doN fun times  a
+        LT -> MkDimension $ doN invfun (negate times) a
 {-# INLINE apply #-}
 
 applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
 applypos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
-    MkDimension $ appEndo (stimes times (Endo fun)) a
+    MkDimension $ doN fun times  a
 {-# INLINE applypos #-}
 --mkisos is the same as repeated use of same
 mkisos :: forall y -> forall x a. Dimension x a -> Dimension (Isos y x) a
