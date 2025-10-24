@@ -61,10 +61,10 @@ infixl 6 !+
 (!-) = liftD2 (-)
 infixl 6 !-
 {-# INLINE (!-) #-}
-dim :: b -> forall a ->  Dimension a b 
+dim :: b -> forall a ->  Dimension (ValidParse @Symbol a) b 
 dim b _ = MkDimension b  
 {-# INLINE dim #-}
-dims ::Functor f => f b -> forall a ->  f (Dimension a b) 
+dims ::Functor f => f b -> forall a ->  f (Dimension (ValidParse @Symbol a) b) 
 dims b _ = fmap MkDimension b  
 {-# INLINE dims #-}
 
