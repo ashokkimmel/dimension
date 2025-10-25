@@ -167,6 +167,11 @@ transformpos s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (Look
     MkDimension $ doN fun times a
 {-# INLINE transformpos #-}
 
+transformneg :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformneg s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
+    MkDimension $ doN fun times a
+{-# INLINE transformneg #-}
+
 same :: forall x a. forall s t -> Dimension x a -> Dimension (Replace s t x) a
 same _ _ (MkDimension a) = MkDimension a
 {-# INLINE same #-}
@@ -183,6 +188,11 @@ applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) 
 applypos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
     MkDimension $ doN fun times  a
 {-# INLINE applypos #-}
+
+applyneg :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+applyneg s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
+    MkDimension $ doN fun times a
+{-# INLINE applyneg #-}
 --mkisos is the same as repeated use of same
 mkisos :: forall y -> forall x a. Dimension x a -> Dimension (Isos y x) a
 mkisos _ (MkDimension a) = MkDimension a
