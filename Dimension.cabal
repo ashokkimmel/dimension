@@ -32,7 +32,7 @@ version:            0.1
 license:            BSD-3-Clause
 
 -- The file containing the license text.
-license-file:       LICENSE
+license-file:       LICENSE.txt
 
 -- The package author(s).
 author:             Ashok Kimmel
@@ -64,10 +64,10 @@ library
         Dimensions.CommonIsos
        , Dimensions.DimensionalMisc
        , Dimensions.GetTermLevel
-       , Dimensions.Ordered.Order
-       , Dimensions.Ordered.Units
-       , Dimensions.Polymorphic.ParseMisc
-       , Dimensions.Polymorphic.Parser
+       , Dimensions.Order
+       , Dimensions.Units
+       , Dimensions.ParseMisc
+       , Dimensions.Parser
        , Dimensions.Printer
        , Dimensions.TypeLevelInt
        , Dimensions.TypeMisc

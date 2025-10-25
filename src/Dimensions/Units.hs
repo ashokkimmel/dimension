@@ -14,6 +14,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE NoGeneralisedNewtypeDeriving #-}
 {-# LANGUAGE RequiredTypeArguments #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE Safe #-}
 module Dimensions.Units (Dimension(..)
                                 , (!*)
@@ -30,9 +31,11 @@ module Dimensions.Units (Dimension(..)
                                 , ValidParse
                                 , mkisos
                                 , applypos
+                                , applyneg
                                 , apply
                                 , same
                                 , transformpos
+                                , transformneg
                                 , transform
                                 , validateDimension
                                 , undimension
@@ -55,7 +58,6 @@ import GHC.TypeLits (Symbol)
 import qualified Dimensions.TypeLevelInt as TI
 import Dimensions.TypeLevelInt (Int')
 import Dimensions.Parser (Parse)
-import Data.Semigroup (Endo(appEndo,Endo),stimes)
 import Dimensions.Order (Sort,Merge)
 import Data.Kind (Constraint)
 import Dimensions.DimensionalMisc (Isos',Delete,UnZero,Replace',LookupD0,Invert)
@@ -87,10 +89,10 @@ infixl 6 !+
 (!-) = liftD2 (-)
 infixl 6 !-
 {-# INLINE (!-) #-}
-dim :: b -> forall a ->  Dimension (ValidParse @Symbol a) b 
+dim :: forall b. b -> forall a -> Dimension (ValidParse @Symbol a) b 
 dim b _ = MkDimension b  
 {-# INLINE dim #-}
-dims ::Functor f => f b -> forall a ->  f (Dimension (ValidParse @Symbol a) b) 
+dims :: forall f b. Functor f => f b -> forall a ->  f (Dimension (ValidParse @Symbol a) b) 
 dims b _ = fmap MkDimension b  
 {-# INLINE dims #-}
 
