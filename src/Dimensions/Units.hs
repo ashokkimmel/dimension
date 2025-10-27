@@ -16,56 +16,64 @@
 {-# LANGUAGE RequiredTypeArguments #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE Safe #-}
-module Dimensions.Units (Dimension(..)
-                                , (!*)
-                                , (!/)
-                                , (!-)
-                                , (!+)
-                                , type (!*)
-                                , type (!/)
-                                , type (!^^)
-                                , type (!^)
-                                , type RT
-                                , type RTN
-                                , Replace
-                                , Isos
-                                , Delete
-                                , Format
-                                , ValidDimension
-                                , ValidParse
-                                , mkisos
-                                , applypos
-                                , applyneg
-                                , apply
-                                , same
-                                , transformpos
-                                , transformneg
-                                , transform
-                                , validateDimension
-                                , undimension
-                                , dimensions
-                                , dimension
-                                , dimensionsPoly
-                                , dimensionPoly
-                                , divD
-                                , combineD2
-                                , liftD2
-                                , noParseDimensions
-                                , noParseDimension
-                                , getDimensionNoParse
-                                , getDimension 
-                                , dims 
-                                , dim 
-                                , combineInvD2
-                                , rtn 
-                                , rt 
-                                , (!^)
-                                , (!^^)
-                                , inject
-                                , replace
-                                , match 
-                                , matchpos
-                                ) where 
+module Dimensions.Units (
+    Dimension(..)
+    , (!*)
+    , (!/)
+    , (!-)
+    , (!+)
+    , type (!*)
+    , type (!/)
+    , type (!^^)
+    , type (!^)
+    , type RT
+    , type RTN
+    , Replace
+    , Isos
+    , Delete
+    , Format
+    , ValidDimension
+    , ValidParse
+    , mkisos
+    , applypos
+    , applyneg
+    , apply
+    , same
+    , transformpos
+    , transformneg
+    , transform
+    , validateDimension
+    , undimension
+    , dimensions
+    , dimension
+    , dimensionsPoly
+    , dimensionPoly
+    , divD
+    , combineD2
+    , liftD2
+    , noParseDimensions
+    , noParseDimension
+    , getDimensionNoParse
+    , getDimension 
+    , dims 
+    , dim 
+    , combineInvD2
+    , rtn 
+    , rt 
+    , (!^)
+    , (!^^)
+    , inject
+    , replace
+    , match 
+    , matchpos
+    , ReadTypeDimension
+    , ToDimension
+    , FromTypeDimension
+    , FromDimension
+    , (!<*>)
+    ) where 
+import Dimensions.Printer (FromDimension,FromTypeDimension)
+import Dimensions.Parser (ReadTypeDimension,ToDimension)
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol,Nat)
 import qualified Dimensions.TypeLevelInt as TI
@@ -74,7 +82,7 @@ import Dimensions.Parser (Parse)
 import Dimensions.Order (Sort,Merge)
 import Data.Kind (Constraint)
 import Dimensions.DimensionalMisc (Isos',Delete,UnZero,Replace',LookupD0,Invert)
-import Dimensions.Data (Dimension(MkDimension),liftD2)
+import Dimensions.Data (Dimension(MkDimension),liftD2,(!<*>))
 import qualified Dimensions.GetTermLevel as TT
 import Dimensions.Match (MatchAll,MatchPos,ChangeMatch,HowManyMatches,convert,unconvert)
 type Replace :: k -> k -> [(k, Int')] -> [(k, Int')]

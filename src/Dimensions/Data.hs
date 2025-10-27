@@ -13,7 +13,7 @@
 {-# LANGUAGE RoleAnnotations #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE Safe #-}
-module Dimensions.Data (Dimension(..),liftD2,mapD) where 
+module Dimensions.Data (Dimension(..),liftD2,(!<*>)) where 
 import GHC.TypeLits (KnownSymbol)
 import Data.Kind (Type)
 import Dimensions.Printer (Print)
@@ -28,7 +28,9 @@ newtype Dimension a b = MkDimension b
 --deriving newtype instance (Fractional b,ValidDimension a) => Fractional (Dimension a b) 
 instance (Show b,KnownSymbol (Print dim)) => Show (Dimension dim b) where
     show (MkDimension a) =  show a ++ ' ' : TT.symbolVal (Print dim)
-mapD :: (a -> b) -> Dimension x a -> Dimension x b
-mapD f (MkDimension a) = MkDimension (f a)
+
 liftD2 :: (a -> b -> c) -> Dimension x a -> Dimension x b -> Dimension x c
 liftD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b) 
+
+(!<*>) :: Dimension x (a -> b) -> Dimension x a -> Dimension x b 
+(!<*>) (MkDimension a) (MkDimension b) = MkDimension (a b)
