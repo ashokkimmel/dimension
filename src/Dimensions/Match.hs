@@ -9,10 +9,13 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE Safe #-}
 
-module Dimensions.Match (MatchPos(..), MatchAll(..),ChangeMatch,StripPrefix) where
+module Dimensions.Match (MatchPos(..), MatchAll(..),ChangeMatch,StripPrefix,HowManyMatches) where
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol)
 import Data.Kind (Constraint,Type)
+import Dimensions.TypeMisc (IfThenElse,type (==))
+import qualified Dimensions.TypeLevelInt  as TI
+import Dimensions.TypeLevelInt (Int')
 type StripPrefix :: Symbol -> Symbol -> Maybe Symbol
 type family StripPrefix a b where 
     StripPrefix a b = StripPrefixU (TL.UnconsSymbol a) (TL.UnconsSymbol b)
@@ -27,6 +30,14 @@ type ChangeMatch :: identifier -> [(k,a)] -> [(k,a)]
 type family ChangeMatch identifier symbols where 
     ChangeMatch _ '[] = '[] 
     ChangeMatch identifier ( '(s,v) ': xs) = ChangeMatchM (Match identifier s) v identifier xs
+type HowManyMatches :: identifier -> [(k,a)] -> Int' 
+type family HowManyMatches identifier xs where 
+    HowManyMatches _ '[] = 'TI.Pos 0
+    HowManyMatches identifier ( '(s,v) ': xs) = 
+        IfThenElse 
+            (Match identifier s == 'Nothing)
+            (HowManyMatches identifier xs) 
+            (v TI.+ HowManyMatches identifier xs)
 type ChangeMatchM :: Maybe k -> a -> [(k,a)] -> identifier -> [(k,a)]
 type family ChangeMatchM match amount identifier xs where 
     ChangeMatchM 'Nothing _ identifier xs =  ChangeMatch identifier xs

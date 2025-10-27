@@ -62,7 +62,10 @@ module Dimensions.Units (Dimension(..)
                                 , (!^)
                                 , (!^^)
                                 , inject
-                                , replace) where 
+                                , replace
+                                , match 
+                                , matchpos
+                                ) where 
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol,Nat)
 import qualified Dimensions.TypeLevelInt as TI
@@ -73,7 +76,7 @@ import Data.Kind (Constraint)
 import Dimensions.DimensionalMisc (Isos',Delete,UnZero,Replace',LookupD0,Invert)
 import Dimensions.Data (Dimension(MkDimension),liftD2)
 import qualified Dimensions.GetTermLevel as TT
-
+import Dimensions.Match (MatchAll,MatchPos,ChangeMatch,HowManyMatches,convert,unconvert)
 type Replace :: k -> k -> [(k, Int')] -> [(k, Int')]
 type Replace s t x = Sort (Replace' s t x)
 type Isos :: [(a, a)] -> [(a, k)] -> [(k, Int')]
@@ -238,3 +241,15 @@ inject f _ (MkDimension a) = MkDimension (f a)
 replace :: forall a -> Dimension b n -> Dimension (a !* b) n
 replace = inject id
 {-# INLINE replace #-}
+
+match :: forall x b k. forall identifier -> (MatchAll identifier k b,TT.ToInt (HowManyMatches identifier x)) => Dimension x b -> Dimension (ChangeMatch identifier x) b
+match identifier (MkDimension a) = let times = TT.intval (HowManyMatches identifier x) in 
+    case compare times 0 of
+        EQ -> MkDimension a
+        GT -> MkDimension $ doN (convert @_ @identifier) times a
+        LT -> MkDimension $ doN (unconvert @_ @identifier) (negate times) a
+{-# INLINE match #-}
+matchpos :: forall x b k. forall identifier -> (MatchPos identifier k b,TL.KnownNat (TI.ToNatural (HowManyMatches identifier x))) => Dimension x b -> Dimension (ChangeMatch identifier x) b
+matchpos identifier (MkDimension a) = let times = TT.natVal (TI.ToNatural (HowManyMatches identifier x)) in
+    MkDimension $ doN (convert @_ @identifier)  times a
+{-# INLINE matchpos #-}
