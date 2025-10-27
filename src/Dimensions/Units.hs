@@ -54,7 +54,7 @@ module Dimensions.Units (Dimension(..)
                                 , dim 
                                 , combineInvD2) where 
 import qualified GHC.TypeLits as TL
-import GHC.TypeLits (Symbol)
+import GHC.TypeLits (Symbol,Nat)
 import qualified Dimensions.TypeLevelInt as TI
 import Dimensions.TypeLevelInt (Int')
 import Dimensions.Parser (Parse)
@@ -78,8 +78,12 @@ type (!*) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
 type (!*) a b = UnZero (Merge a b)
 type (!/) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
 type (!/) a b = UnZero (Merge a (Invert b))
-
-
+type (!^) :: [(a,Int')] -> Int' -> [(a,Int')]
+type family (!^) a b where 
+  [] !^ _ = []
+  ((a,b):xs) !^ exp = (a,b TI.* exp) !^ xs !^ exp 
+type (!|^|) :: [(a,Int')] -> Nat -> [(a,Int')]
+type a !|^| b = a !|^| (TI.Pos b) 
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
 (!+) = liftD2 (+)
 infixl 6 !+
