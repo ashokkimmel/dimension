@@ -23,6 +23,8 @@ module Dimensions.Units (Dimension(..)
                                 , (!+)
                                 , type (!*)
                                 , type (!/)
+                                , type (!^)
+                                , type (!|^|)
                                 , Replace
                                 , Isos
                                 , Delete
@@ -80,10 +82,11 @@ type (!/) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
 type (!/) a b = UnZero (Merge a (Invert b))
 type (!^) :: [(a,Int')] -> Int' -> [(a,Int')]
 type family (!^) a b where 
-  [] !^ _ = []
-  ((a,b):xs) !^ exp = (a,b TI.* exp) !^ xs !^ exp 
+  '[] !^ _ = '[]
+  ('(a,b)':xs) !^ e = '(a,b TI.* e) ': xs !^ e 
 type (!|^|) :: [(a,Int')] -> Nat -> [(a,Int')]
-type a !|^| b = a !|^| (TI.Pos b) 
+type a !|^| b = a !^ ('TI.Pos b)
+-- type RT :: [(a,Int')] ->  Int' -> [(a,Int')]
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
 (!+) = liftD2 (+)
 infixl 6 !+
