@@ -23,8 +23,10 @@ module Dimensions.Units (Dimension(..)
                                 , (!+)
                                 , type (!*)
                                 , type (!/)
+                                , type (!^^)
                                 , type (!^)
-                                , type (!|^|)
+                                , type RT
+                                , type RTN
                                 , Replace
                                 , Isos
                                 , Delete
@@ -54,7 +56,11 @@ module Dimensions.Units (Dimension(..)
                                 , getDimension 
                                 , dims 
                                 , dim 
-                                , combineInvD2) where 
+                                , combineInvD2
+                                , rtn 
+                                , rt 
+                                , (!^)
+                                , (!^^)) where 
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol,Nat)
 import qualified Dimensions.TypeLevelInt as TI
@@ -80,16 +86,30 @@ type (!*) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
 type (!*) a b = UnZero (Merge a b)
 type (!/) :: [(k,Int')] -> [(k,Int')] -> [(k,Int')]
 type (!/) a b = UnZero (Merge a (Invert b))
-type (!^) :: [(a,Int')] -> Int' -> [(a,Int')]
-type family (!^) a b where 
-  '[] !^ _ = '[]
-  ('(a,b)':xs) !^ e = '(a,b TI.* e) ': xs !^ e 
-type (!|^|) :: [(a,Int')] -> Nat -> [(a,Int')]
-type a !|^| b = a !^ ('TI.Pos b)
+type (!^^) :: [(a,Int')] -> Int' -> [(a,Int')]
+type family (!^^) a b where 
+  '[] !^^ _ = '[]
+  ('(a,b)':xs) !^^ e = '(a,b TI.* e) ': xs !^^ e 
+type (!^) :: [(a,Int')] -> Nat -> [(a,Int')]
+type a !^ b = a !^^ ('TI.Pos b)
 type RT :: [(a,Int')] ->  Int' -> [(a,Int')]
 type family RT a b where 
   '[] `RT` _ = '[]
   ('(a,e)':xs) `RT` b = '(a, e TI./ b) ': xs `RT` b
+type RTN :: [(a,Int')] -> Nat -> [(a,Int')]
+type RTN a b = RT a ('TI.Pos b) 
+(!^^) :: Fractional n => Dimension a n -> forall b-> TT.ToInt b => Dimension (a !^^ b) n
+(MkDimension a) !^^ b = MkDimension (a ^^ (TT.intval b))
+infixr 8 !^^
+(!^) :: Num n => Dimension a n -> forall b-> TL.KnownNat b => Dimension (a !^ b) n
+(MkDimension a) !^ b = MkDimension (a ^ (TT.natVal b))
+{-# INLINE (!^) #-}
+rt :: Floating n => Dimension a n -> forall b-> TT.ToInt b => Dimension (RT a b) n
+rt (MkDimension a) b = MkDimension (a ** (recip (fromInteger (TT.intval b))))
+{-# INLINE rt #-}
+rtn :: Floating n => Dimension a n -> forall b-> TL.KnownNat b => Dimension (RTN a b) n
+rtn (MkDimension a) b = MkDimension (a ** (recip (fromInteger (TT.natVal b))))
+{-# INLINE rtn #-}
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
 (!+) = liftD2 (+)
 infixl 6 !+
