@@ -60,7 +60,9 @@ module Dimensions.Units (Dimension(..)
                                 , rtn 
                                 , rt 
                                 , (!^)
-                                , (!^^)) where 
+                                , (!^^)
+                                , inject
+                                , replace) where 
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol,Nat)
 import qualified Dimensions.TypeLevelInt as TI
@@ -229,3 +231,10 @@ applyneg s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate 
 mkisos :: forall y -> forall x a. Dimension x a -> Dimension (Isos y x) a
 mkisos _ (MkDimension a) = MkDimension a
 {-# INLINE mkisos #-}
+
+inject :: (n -> n) -> forall a -> Dimension b n -> Dimension (a !* b) n
+inject f _ (MkDimension a) = MkDimension (f a)
+{-# INLINE inject #-}
+replace :: forall a -> Dimension b n -> Dimension (a !* b) n
+replace = inject id
+{-# INLINE replace #-}
