@@ -64,8 +64,8 @@ Despite the fact that the ordering of meter is actually before second, the print
 
 `!+`,`!-`,`!*`,`!/`,`divD` can be used for multiplying and dividing dimensions. 
 They are mostly just specialized forms of `liftD2`, which works on two of the same and `combineD2`, which multiplies the two types. 
-    
-    
+`rt`,`rtn`,`!^`,`!^^` all allow for exponentiation and roots. They need type level arguments. `rt`,`!^^` work on `Int'`s, while `rt` and `!^` work on `Nat`s.  
+The type families `!*`,`!/`,`RT`,`RTN` all work at the type level and can be used with the NoParse functions to avoid parsing.
 ## Transformations along dimensions
 
 ```transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a 
@@ -95,10 +95,10 @@ the same as repeated usage of `same`, uses a type level list.
 ```inject :: (n -> n) -> forall a -> Dimension b n -> Dimension (a !* b) n
 ```
 Allows you to add a `dimension` to a type, using a function. Example, adding a mole,
-```
-replace :: forall a -> Dimension b n -> Dimension (a !* b) n
-replace = inject id
-```
+
+    replace :: forall a -> Dimension b n -> Dimension (a !* b) n
+    replace = inject id
+
 Replace can be used to replace simple things, even if you don't want to do it multiple times.
 Example: `replace (Parse "billion/thousand^3")`
 
