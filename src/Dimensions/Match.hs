@@ -9,7 +9,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE Safe #-}
 
-module Dimensions.Match (MatchPos(..), MatchAll(..),ChangeMatch,StripPrefix,HowManyMatches) where
+module Dimensions.Match (MatchAll(..),ChangeMatch,StripPrefix,HowManyMatches) where
 import qualified GHC.TypeLits as TL
 import GHC.TypeLits (Symbol)
 import Data.Kind (Constraint,Type)
@@ -42,10 +42,8 @@ type ChangeMatchM :: Maybe k -> a -> [(k,a)] -> identifier -> [(k,a)]
 type family ChangeMatchM match amount identifier xs where 
     ChangeMatchM 'Nothing _ identifier xs =  ChangeMatch identifier xs
     ChangeMatchM ('Just s) v identifier xs = '(s,v) ': ChangeMatch identifier xs
-type MatchPos :: identifier -> Type -> Type -> Constraint
-class MatchPos identifier k b | identifier -> k where 
-    type Match identifier :: k -> Maybe k 
-    convert :: b -> b 
 type MatchAll :: identifier -> Type -> Type -> Constraint
-class MatchPos identifier k b => MatchAll identifier k b | identifier -> k where 
+class MatchAll identifier k b | identifier -> k where 
+    type Match identifier :: k -> Maybe k 
+    convert   :: b -> b 
     unconvert :: b -> b 
