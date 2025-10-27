@@ -28,8 +28,8 @@ source-repository head
     location: https://github.com/ashokkimmel/dimension/
 
 common warnings
-    ghc-options: -Weverything -Wno-implicit-prelude -Wno-operator-whitespace -Wno-prepositive-qualified-module
-
+    ghc-options: -Weverything -Wno-implicit-prelude -Wno-operator-whitespace -Wno-prepositive-qualified-module -Wno-missing-local-signatures
+-- the _compileParsedExpr bug is the reason for the missing local signatures suppression
 
 library
     -- Import common warning flags.
@@ -49,6 +49,7 @@ library
        , Dimensions.TypeMisc
        , Dimensions.Data
        , Dimensions.Metric
+       , Dimensions.Match
         
     -- Modules included in this library but not exported.
     -- other-modules:
