@@ -68,23 +68,39 @@ They are mostly just specialized forms of `liftD2`, which works on two of the sa
     
 ## Transformations along dimensions
 
-```transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a```
+```transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a 
+```
 This is used to completely switch a type parameter, whether it shows up in the positive or negative. Common usage would be with prefixes, `kilogram`  to `gram`,etc.
 
-```transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a```
+```transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+```
 Like `transform` but only needs the switch in the positive direction. However, it requries that the dimension only occurs a positive number of times. Useful when you know that your unit occurs in the positive place.
 
-```apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Delete s x) a```
+```apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Delete s x) a
+```
 Like `transform`, but consumes the dimension. Can be useful with things like `billion`, or `mole`.
 
-```applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a```
+```applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+```
 `apply` but only needs 1 function. I used this to eliminate the `billion` in the example.
 
-```same :: forall s t x. (forall a. Dimension x a -> Dimension (Replace s t x) a)```
+```same :: forall s t x. (forall a. Dimension x a -> Dimension (Replace s t x) a)
+```
 Assert that two things are the same, and replace one with another. Example: `g` `gram` `grams` all symbolize the same thing, but some places might use different ones.
 
-```mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a```
+```mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a
+```
 the same as repeated usage of `same`, uses a type level list.
+
+```inject :: (n -> n) -> forall a -> Dimension b n -> Dimension (a !* b) n
+```
+Allows you to add a `dimension` to a type, using a function. Example, adding a mole,
+```
+replace :: forall a -> Dimension b n -> Dimension (a !* b) n
+replace = inject id
+```
+Replace can be used to replace simple things, even if you don't want to do it multiple times.
+Example: `replace (Parse "billion/thousand^3")`
 
 ## Extracting dimensions
 `undimension`,  requires all tags be eliminated already.
@@ -92,5 +108,6 @@ the same as repeated usage of `same`, uses a type level list.
 `getdimension` allow you to specify the dimension, and `getdimensionNoParse` allows you to manually parse things.
 ## Extending:
 To extend this to a non-symbol base kind, define a `ToDimension`(for parsing), `FromDimension` (for printing), and `Compare` (for preserving invariants). Then you should probably define your own `dim`,`dims`,etc. functions and importing that module. The functionality should remain the same. 
+You can also use the `MatchAll` class to define custom transformations along `Symbols`. Example: Get rid of all `kilo` prefixes in a dimension. 
 ## TODO:
 This package is a work in progress, and I would appreciate help. I  implemented a match class that allows for functions allong dimensional strings, creating futher extensibility. There are also very few tests. I'm quite bored of this project, but I am willing to finish it if someone shows interest.
