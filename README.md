@@ -108,6 +108,6 @@ Example: `replace (Parse "billion/thousand^3")`
 `getdimension` allow you to specify the dimension, and `getdimensionNoParse` allows you to manually parse things.
 ## Extending:
 To extend this to a non-symbol base kind, define a `ToDimension`(for parsing), `FromDimension` (for printing), and `Compare` (for preserving invariants). Then you should probably define your own `dim`,`dims`,etc. functions and importing that module. The functionality should remain the same. 
-You can also use the `MatchAll` class to define custom transformations along `Symbols`. Example: Get rid of all `kilo` prefixes in a dimension. 
+You can also use the `MatchAll` class and the `match` function to define custom transformations along `Symbols`. Example: Get rid of all `kilo` prefixes in a dimension. 
 ## TODO:
 This package is a work in progress, and I would appreciate help. I  implemented a match class that allows for functions allong dimensional strings, creating futher extensibility. There are also very few tests. I'm quite bored of this project, but I am willing to finish it if someone shows interest.
