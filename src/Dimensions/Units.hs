@@ -86,7 +86,10 @@ type family (!^) a b where
   ('(a,b)':xs) !^ e = '(a,b TI.* e) ': xs !^ e 
 type (!|^|) :: [(a,Int')] -> Nat -> [(a,Int')]
 type a !|^| b = a !^ ('TI.Pos b)
--- type RT :: [(a,Int')] ->  Int' -> [(a,Int')]
+type RT :: [(a,Int')] ->  Int' -> [(a,Int')]
+type family RT a b where 
+  '[] `RT` _ = '[]
+  ('(a,e)':xs) `RT` b = '(a, e TI./ b) ': xs `RT` b
 (!+) :: Num n => Dimension a n -> Dimension a n -> Dimension a n
 (!+) = liftD2 (+)
 infixl 6 !+

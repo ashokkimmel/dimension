@@ -9,9 +9,10 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoGeneralisedNewtypeDeriving #-}
 {-# LANGUAGE Safe #-}
-module Dimensions.TypeLevelInt (type (+),type (-), type (*),ToNegInt,ToPosInt,Negate,Int'(Pos,Neg),ToNatural) where
+module Dimensions.TypeLevelInt (type (+),type (-), type (*),type (/),ToNegInt,ToPosInt,Negate,Int'(Pos,Neg),ToNatural) where
 import GHC.TypeLits qualified as TL
 import GHC.TypeLits (Nat)
+import GHC.TypeError ( TypeError, ErrorMessage(Text,ShowType,(:<>:)) )
 import Dimensions.TypeMisc (IfThenElse)
 import Data.Kind (Type)
 type Int'     :: Type
@@ -39,6 +40,12 @@ type family (*) m n where
     ('Neg m) * ('Neg n) = 'Pos ((m TL.+ 1) TL.* (n TL.+ 1))
     ('Pos m) * ('Neg n) = 'Neg (m TL.* (n TL.+ 1) TL.- 1)
     ('Neg n) * ('Pos m) = 'Neg (m TL.* (n TL.+ 1) TL.- 1)
+type (/) :: Int' -> Int' -> Int'
+type family (/) a b where 
+    ('Pos a) / ('Pos b) = 'Pos (a `SafeDiv` b)
+    ('Pos a) / ('Neg b) = ToNegInt (a `SafeDiv` (b TL.+ 1))
+    ('Neg a) / ('Pos b) = ToNegInt ((1 TL.+ a) `SafeDiv` b)
+    ('Neg a) / ('Neg b) = 'Pos ((1 TL.+ a) `SafeDiv` (b TL.+ 1))
 
 type Negate :: Int' -> Int'
 type family Negate a where
@@ -54,3 +61,10 @@ type family ToNegInt a where
 type ToPosInt :: Nat -> Int'
 type family ToPosInt a where
     ToPosInt n = 'Pos n
+type SafeDiv :: Nat -> Nat -> Nat
+type family SafeDiv a b where
+    SafeDiv a b = SafeDivH a b (a `TL.Mod` b) (a `TL.Div` b)
+type SafeDivH :: Nat -> Nat -> Nat -> Nat -> Nat
+type family SafeDivH x y a b where
+    SafeDivH _ _ 0 b = b
+    SafeDivH a b _ _ = TypeError ('Text "Remainder of " ':<>: 'ShowType a ':<>: 'Text " divided by " ':<>: 'ShowType b ':<>: 'Text " is non-zero, cannot convert to integer")
