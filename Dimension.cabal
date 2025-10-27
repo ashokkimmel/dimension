@@ -6,7 +6,8 @@ version:            0.1
 synopsis: Extensible typed Dimensions
 
 -- A longer description of the package.
--- description:
+description:
+    A package with statically typed dimensions that is more extensible than /Dimensional/ and simpler than /units/ Skip to the README for details.
 license:            BSD-3-Clause
 license-file:       LICENSE
 author:             Ashok Kimmel
@@ -16,12 +17,15 @@ category:           Math,Physics
 build-type:         Simple
 
 -- Extra doc files to be distributed with the package, such as a CHANGELOG or a README.
--- extra-doc-files:    CHANGELOG.md
+extra-doc-files:
+    CHANGELOG.md
 
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
 extra-source-files:
-	CHANGELOG.md
-	README.md
+    README.md
+source-repository head
+    type:     git
+    location: https://github.com/ashokkimmel/dimension/
 
 common warnings
     ghc-options: -Weverything -Wno-implicit-prelude -Wno-operator-whitespace -Wno-prepositive-qualified-module
