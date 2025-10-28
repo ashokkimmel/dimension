@@ -34,3 +34,14 @@ liftD2 f (MkDimension a) (MkDimension b) = MkDimension (f a b)
 
 (!<*>) :: Dimension x (a -> b) -> Dimension x a -> Dimension x b 
 (!<*>) (MkDimension a) (MkDimension b) = MkDimension (a b)
+
+
+instance Num a => Num (Dimension '[] a) where 
+    MkDimension a + MkDimension b = MkDimension (a + b)
+    MkDimension a - MkDimension b = MkDimension (a - b)
+    MkDimension a * MkDimension b = MkDimension (a * b)
+    negate (MkDimension a) = MkDimension (negate a)
+    abs (MkDimension a) = MkDimension (abs a)
+    signum (MkDimension a) = MkDimension (signum a)
+    fromInteger n = MkDimension (fromInteger n)
+
