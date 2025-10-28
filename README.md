@@ -72,27 +72,33 @@ The type families `!*`,`!/`,`RT`,`RTN` all work at the type level and can be use
 ```
 This is used to completely switch a type parameter, whether it shows up in the positive or negative. Common usage would be with prefixes, `kilogram`  to `gram`,etc.
 
-```transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+```
+transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
 ```
 Like `transform` but only needs the switch in the positive direction. However, it requries that the dimension only occurs a positive number of times. Useful when you know that your unit occurs in the positive place.
 
-```apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Delete s x) a
+```
+apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Delete s x) a
 ```
 Like `transform`, but consumes the dimension. Can be useful with things like `billion`, or `mole`.
 
-```applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+```
+applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
 ```
 `apply` but only needs 1 function. I used this to eliminate the `billion` in the example.
 
-```same :: forall s t x. (forall a. Dimension x a -> Dimension (Replace s t x) a)
+```
+same :: forall s t x. (forall a. Dimension x a -> Dimension (Replace s t x) a)
 ```
 Assert that two things are the same, and replace one with another. Example: `g` `gram` `grams` all symbolize the same thing, but some places might use different ones.
 
-```mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a
+```
+mkisos :: forall y x a. Dimension x a -> Dimension (Isos y x) a
 ```
 the same as repeated usage of `same`, uses a type level list.
 
-```inject :: (n -> n) -> forall a -> Dimension b n -> Dimension (a !* b) n
+```
+inject :: (n -> n) -> forall a -> Dimension b n -> Dimension (a !* b) n
 ```
 Allows you to add a `dimension` to a type, using a function. Example, adding a mole,
 
