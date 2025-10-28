@@ -68,7 +68,8 @@ They are mostly just specialized forms of `liftD2`, which works on two of the sa
 The type families `!*`,`!/`,`RT`,`RTN` all work at the type level and can be used with the NoParse functions to avoid parsing.
 ## Transformations along dimensions
 
-```transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a 
+```
+transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a 
 ```
 This is used to completely switch a type parameter, whether it shows up in the positive or negative. Common usage would be with prefixes, `kilogram`  to `gram`,etc.
 
