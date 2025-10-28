@@ -9,7 +9,8 @@ A simple library oriented around providing easy and usable string-based units wh
     caloriesPerYear = caloriePerDay !* daysInYear !* worldPopulation 
     > 5943659999270000 calories / years
 Since everything has units, I chose `Symbols` to be the core dimensional type of this project.
-
+## Debug tip:
+When getting an error like `Could not match kind symbol with *` in a polymorphic function like this `assertSame :: Dimension n a -> Dimension n a -> Dimension n a`, Try changing the type signature to `assertSame :: forall k a (n :: [(k,Int')]). Dimension n a -> Dimension n a -> Dimension n a`. This happened once, please report any other problems/solutions to ashok.kimmel@gmail.com, so I can add them to this README.   
 ## Implementation
 A dimension is difined quite simply as: 
 
