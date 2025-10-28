@@ -36,10 +36,10 @@ There are 8 ways to create dimensions
     dimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (ValidParse @Symbol a) b)
     dimensionPoly :: forall a -> forall b.  b -> Dimension (ValidParse a) b 
     dimensionsPoly :: forall a -> forall f b. Functor f => f b -> f (Dimension (ValidParse a) b) 
-    noParseDimension :: forall a -> forall b. b -> Dimension (Format a) b
-    noParseDimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
+    dimNP :: forall a -> forall b. b -> Dimension (Format a) b
+    dimNPs :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
 
-`dim`,`dims`,`dimension` and `dimensions` are the most common ones. They only work on symbols however, so if you want to use a different base, they would fail. `dim` and `dims` are like their longer counterparts just with the arguments flipped. `dimensions` is just dimension but lifted over a functor. Inspired by the ReadMe for the `Dimensional`  library. The polymorphic versions suffer from type ambiguity as the kind of the resulting `Dimension` is unknown. It is reccomended that you add a wrapper if you plan to use a seperate dimension. `noParseDimension` is if you don't want to use the built in parser and want to manually specify the dimensions. 
+`dim`,`dims`,`dimension` and `dimensions` are the most common ones. They only work on symbols however, so if you want to use a different base, they would fail. `dim` and `dims` are like their longer counterparts just with the arguments flipped. `dimensions` is just dimension but lifted over a functor. Inspired by the ReadMe for the `Dimensional`  library. The polymorphic versions suffer from type ambiguity as the kind of the resulting `Dimension` is unknown. It is reccomended that you add a wrapper if you plan to use a seperate dimension. `dimNP` is if you don't want to use the built in parser and want to manually specify the dimensions. 
 ### Note on parser
 The parser is very simple: 
 it checks for `*`,and `/`, splits them into sections,

@@ -51,8 +51,8 @@ module Dimensions.Units (
     , divD
     , combineD2
     , liftD2
-    , noParseDimensions
-    , noParseDimension
+    , dimNPs
+    , dimNP
     , getDimensionNoParse
     , getDimension 
     , dims 
@@ -154,13 +154,13 @@ dimensionsPoly :: forall a -> forall f b. Functor f => f b -> f (Dimension (Vali
 dimensionsPoly _ = fmap MkDimension
 {-# INLINE dimensionsPoly #-}
 
-noParseDimension :: forall a -> forall b. b -> Dimension (Format a) b
-noParseDimension _ = MkDimension
-{-# INLINE noParseDimension #-}
+dimNP :: forall a -> forall b. b -> Dimension (Format a) b
+dimNP _ = MkDimension
+{-# INLINE dimNP #-}
 
-noParseDimensions :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
-noParseDimensions _ = fmap MkDimension
-{-# INLINE noParseDimensions #-}
+dimNPs :: forall a -> forall f b. Functor f => f b -> f (Dimension (Format a) b)
+dimNPs _ = fmap MkDimension
+{-# INLINE dimNPs #-}
 
 validateDimension :: Dimension a b -> Dimension (Format a) b
 validateDimension (MkDimension a) = MkDimension a
