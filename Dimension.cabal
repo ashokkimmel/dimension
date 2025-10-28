@@ -70,7 +70,7 @@ library
 
 test-suite Dimension-test
     -- Import common warning flags.
-    import:           warnings
+    import:        
 
     -- Base language which the package is written in.
     default-language: Haskell2010
@@ -92,4 +92,6 @@ test-suite Dimension-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.17.2.1,
+        base ^>=4.21,
+        Dimension
+

@@ -196,7 +196,7 @@ getDimensionNoParse _ (MkDimension c) = c
 doN :: (Eq a, Num a) => (t -> t) -> a -> t -> t
 doN f = go where 
     go 0 a  = a
-    go !x a = f (go (x - 1) a)
+    go x a = f (go (x - 1) a)
 {-# INLINE doN #-}
 transform :: forall x a. forall s t -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dimension x a -> Dimension (Replace s t x) a
 transform s _ (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
