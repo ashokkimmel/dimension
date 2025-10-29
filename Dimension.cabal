@@ -1,5 +1,5 @@
 cabal-version:      3.0
-name:               Dimension
+name:               units-list
 version:            0.1
 
 -- A short (one-line) description of the package.
@@ -93,5 +93,5 @@ test-suite Dimension-test
     -- Test dependencies.
     build-depends:
         base ^>=4.21,
-        Dimension
+        units-list
 
