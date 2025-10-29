@@ -3,7 +3,7 @@ A simple library oriented around providing easy and usable string-based units wh
 ## Example
 
     worldPopulationInBillions = dimension "billion*people" 8.142
-    worldPopulation = fmap floor $ applypos "billion" (*1e9) worldPopulationInBillions
+    worldPopulation = fmap floor $ applyPos "billion" (*1e9) worldPopulationInBillions
     daysInYear = dimension "days/years" 365
     caloriePerDay = dimension "calories/days/people" 2000    
     caloriesPerYear = caloriePerDay !* daysInYear !* worldPopulation 
@@ -75,7 +75,7 @@ transform :: forall s t x a. TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> Dime
 This is used to completely switch a type parameter, whether it shows up in the positive or negative. Common usage would be with prefixes, `kilogram`  to `gram`,etc.
 
 ```
-transformpos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformPos :: forall s t x a. (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
 ```
 Like `transform` but only needs the switch in the positive direction. However, it requries that the dimension only occurs a positive number of times. Useful when you know that your unit occurs in the positive place.
 
@@ -85,7 +85,7 @@ apply :: forall x a. forall s -> TT.ToInt (LookupD0 s x) => (a -> a, a -> a) -> 
 Like `transform`, but consumes the dimension. Can be useful with things like `billion`, or `mole`.
 
 ```
-applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+applyPos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
 ```
 `apply` but only needs 1 function. I used this to eliminate the `billion` in the example.
 
@@ -113,7 +113,7 @@ Example: `replace (Parse "billion/thousand^3")`
 ## Extracting dimensions
 `undimension`,  requires all tags be eliminated already.
 
-`getdimension` allow you to specify the dimension, and `getdimensionNoParse` allows you to manually parse things.
+`getDimension` allow you to specify the dimension, and `getDimensionNP` allows you to manually parse things.
 ## Extending:
 To extend this to a non-symbol base kind, define a `ToDimension`(for parsing), `FromDimension` (for printing), and `Compare` (for preserving invariants). Then you should probably define your own `dim`,`dims`,etc. functions and importing that module. The functionality should remain the same. 
 You can also use the `MatchAll` class and the `match` function to define custom transformations along `Symbols`. Example: Get rid of all `kilo` prefixes in a dimension. 

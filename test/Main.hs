@@ -19,16 +19,16 @@ main = do
   putStrLn "\nTests starting: \n\n\n"
   
   test 
-    "applypos works correct amount of times" 
-    (applypos "check" succ (0 `dim` "check^10")) 
+    "applyPos works correct amount of times" 
+    (applyPos "check" succ (0 `dim` "check^10")) 
     10
   test 
-    "applyneg works correct amount of times" 
-    (applyneg "check" pred (0 `dim` "check^-10")) 
+    "applyNeg works correct amount of times" 
+    (applyNeg "check" pred (0 `dim` "check^-10")) 
     (-10)
   test
-    "transformpos works the correct amount of times"
-    (transformpos 
+    "transformPos works the correct amount of times"
+    (transformPos 
       "check"
       "result"
       succ 

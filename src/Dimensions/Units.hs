@@ -35,12 +35,12 @@ module Dimensions.Units (
     , ValidDimension
     , ValidParse
     , mkisos
-    , applypos
-    , applyneg
+    , applyPos
+    , applyNeg
     , apply
     , same
-    , transformpos
-    , transformneg
+    , transformPos
+    , transformNeg
     , transform
     , validateDimension
     , undimension
@@ -53,7 +53,7 @@ module Dimensions.Units (
     , liftD2
     , dimNPs
     , dimNP
-    , getDimensionNoParse
+    , getDimensionNP
     , getDimension 
     , dims 
     , dim 
@@ -190,9 +190,9 @@ undimension (MkDimension a) = a
 getDimension :: forall a -> Dimension (Parse a) c -> c 
 getDimension _ (MkDimension c) = c
 {-# INLINE getDimension #-}
-getDimensionNoParse :: forall a -> Dimension a c -> c 
-getDimensionNoParse _ (MkDimension c) = c
-{-# INLINE getDimensionNoParse #-}
+getDimensionNP :: forall a -> Dimension a c -> c 
+getDimensionNP _ (MkDimension c) = c
+{-# INLINE getDimensionNP #-}
 doN :: (Eq a, Num a) => (t -> t) -> a -> t -> t
 doN f = go where 
     go 0 a  = a
@@ -206,15 +206,15 @@ transform s _ (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x
         LT -> MkDimension $ doN invfun (negate times) a
 {-# INLINE transform #-}
 
-transformpos :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transformpos s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
+transformPos :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformPos s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
     MkDimension $ doN fun times a
-{-# INLINE transformpos #-}
+{-# INLINE transformPos #-}
 
-transformneg :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
-transformneg s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
+transformNeg :: forall x a. forall s t -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Replace s t x) a
+transformNeg s _ fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
     MkDimension $ doN fun times a
-{-# INLINE transformneg #-}
+{-# INLINE transformNeg #-}
 
 same :: forall x a. forall s t -> Dimension x a -> Dimension (Replace s t x) a
 same _ _ (MkDimension a) = MkDimension a
@@ -228,15 +228,15 @@ apply s (fun,invfun) (MkDimension a) = let times = TT.intval (LookupD0 s x) in
         LT -> MkDimension $ doN invfun (negate times) a
 {-# INLINE apply #-}
 
-applypos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
-applypos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
+applyPos :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (LookupD0 s x))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+applyPos s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (LookupD0 s x)) in
     MkDimension $ doN fun times  a
-{-# INLINE applypos #-}
+{-# INLINE applyPos #-}
 
-applyneg :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
-applyneg s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
+applyNeg :: forall x a. forall s -> (TL.KnownNat (TI.ToNatural (TI.Negate (LookupD0 s x)))) => (a -> a) -> Dimension x a -> Dimension (Delete s x) a
+applyNeg s fun (MkDimension a) = let times = TT.natVal (TI.ToNatural (TI.Negate (LookupD0 s x))) in
     MkDimension $ doN fun times a
-{-# INLINE applyneg #-}
+{-# INLINE applyNeg #-}
 --mkisos is the same as repeated use of same
 mkisos :: forall y -> forall x a. Dimension x a -> Dimension (Isos y x) a
 mkisos _ (MkDimension a) = MkDimension a
