@@ -26,7 +26,7 @@ There are two invariants: The `Int'` should never be zero, and the `Dimension` s
     data Int' = Pos Nat | Neg Nat 
     
 `Neg n` represents `-(n+1)`. 
-
+If you really need to create a dimension, you are encouraged to use `ToNegInt` and `ToPosInt` from `Dimensions.TypeLevelInt`, as implementation may change.
 ## Creation
 There are 8 ways to create dimensions
 
