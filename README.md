@@ -1,4 +1,4 @@
-# dimension
+# units-list
 A simple library oriented around providing easy and usable string-based units while still remaining extensible. Tries to be both simpler than the `units` package, and be more extensible than the `dimensional` package.
 ## Example
 
