@@ -180,6 +180,8 @@ infixl 7 !*
 (!/) :: Fractional n => Dimension a n -> Dimension b n -> Dimension (a !/ b) n
 (MkDimension a) !/ (MkDimension b) = MkDimension (a / b)
 infixl 7 !/
+recipD :: Fractional n => Dimension a n -> Dimension (Invert a) n
+recipD (MkDimension a) = MkDimension $ recip a
 {-# INLINE (!/) #-}
 divD :: Integral n => Dimension a n -> Dimension b n -> Dimension (a !/ b) n
 divD (MkDimension a) (MkDimension b) = MkDimension (a `div` b)
