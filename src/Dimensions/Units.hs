@@ -22,6 +22,7 @@ module Dimensions.Units (
     , (!/)
     , (!-)
     , (!+)
+    , recipD
     , type (!*)
     , type (!/)
     , type (!^^)
